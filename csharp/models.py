@@ -128,7 +128,7 @@ class OperationSpecification(models.Model):
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
     operation = models.CharField(max_length=200, verbose_name='Операция', default='Введите операцию')
-    num = models.IntegerField(verbose_name='Порядковый номер', default=1)
+    num = models.IntegerField(verbose_name='Порядковый номер', default=1, blank=True)
     equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, default=EquipmentType.DEFAULT_PK,
                                        verbose_name='Тип оборудования', blank=True)
     operation_time = models.DateTimeField(verbose_name='Время на операцию', default=timezone.now)
@@ -147,7 +147,7 @@ class Equipment(models.Model):
     characteristic = models.TextField(blank=True, verbose_name='Характеристика')
 
     def __str__(self):
-        return self.equipment_type
+        return str(self.equipment_type)
 
 
 class Order(models.Model):
