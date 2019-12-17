@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils import timezone
+from django.contrib.auth.models import User, Group
 from csharp.models import *
 
 
@@ -19,9 +21,15 @@ class ProviderAdmin(admin.ModelAdmin):
 
 
 class ToolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'tool_type', 'purchase_date', 'amount')
+    def time_seconds(self, obj):
+        return ((timezone.now() - obj.purchase_date) / 30).days
+    time_seconds.admin_order_field = 'purchase_date'
+    time_seconds.short_description = 'Время в месяцах'
+
+    list_display = ('name', 'tool_type', 'purchase_date', 'time_seconds', 'amount')
 
     list_filter = ['purchase_date']
+
 
 class OperationSpecificationInline(admin.StackedInline):
     model = OperationSpecification
@@ -49,6 +57,7 @@ class ProductAdmin(admin.ModelAdmin):
     ]
     inlines = [SemifinishedSpecificationInline, ProductSpecificationInline,
                DecorationSpecificationInline, OperationSpecificationInline]
+
 #     def get_fieldsets(self, request, obj=None):
 #         fieldsets = super(OperationSpecificationAdmin, self).get_fieldsets(request, obj)
 #         fieldsets[0][1]['fields'] += ['num']
@@ -59,7 +68,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.index_template = 'admin/custom_index.html'
 
-admin.site.site_header = 'Jopa'
+# admin.site.site_header = 'Jopa'
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
