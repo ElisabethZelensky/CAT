@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -78,7 +80,7 @@ class DecorationSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
     decoration = models.ForeignKey(Decoration, on_delete=models.CASCADE, verbose_name='Украшение для торта',
                                    default=Decoration.DEFAULT_PK)
-    amount = models.FloatField(default=0, verbose_name='Количество')
+    amount = models.FloatField(default=0, verbose_name='Количество', blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.product, self.decoration)
@@ -92,7 +94,7 @@ class SemifinishedSpecification(models.Model):
                                 default=Product.DEFAULT_PK)
     semifinished = models.ForeignKey(Product, on_delete=models.CASCADE, default=Product.DEFAULT_PK,
                                      verbose_name='Полуфабрикат', related_name="semifinished")
-    amount = models.FloatField(default=0, verbose_name='Количество')
+    amount = models.FloatField(default=0, verbose_name='Количество', blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.product, self.semifinished)
@@ -105,7 +107,7 @@ class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, verbose_name='Ингредиент',
                                    default=Ingredient.DEFAULT_PK)
-    amount = models.FloatField(default=0, verbose_name='Количество')
+    amount = models.FloatField(default=0, verbose_name='Количество', blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.product, self.ingredient)
@@ -127,11 +129,11 @@ class OperationSpecification(models.Model):
     Спецификация операции
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
+    num = models.IntegerField(verbose_name='Порядковый номер', default=1)
     operation = models.CharField(max_length=200, verbose_name='Операция', default='Введите операцию')
-    num = models.IntegerField(verbose_name='Порядковый номер', default=1, blank=True)
     equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, default=EquipmentType.DEFAULT_PK,
                                        verbose_name='Тип оборудования', blank=True)
-    operation_time = models.DateTimeField(verbose_name='Время на операцию', default=timezone.now)
+    operation_time = models.DateTimeField(verbose_name='Время на операцию', default=timezone.now, blank=True)
 
     def __str__(self):
         return self.operation
@@ -175,3 +177,21 @@ class Order(models.Model):
     def __str__(self):
         return '{} {}'.format(self.order_name, self.product)
 
+
+class Tool(models.Model):
+    """
+    Инструменты
+    """
+    name = models.CharField(max_length=50, default='Введите наименование инструмента', verbose_name='Наименование')
+    description = models.TextField(blank=True, verbose_name='Описание')
+    tool_type = models.CharField(max_length=50, default='Введите тип инструмента', verbose_name='Тип инструмента')
+    wear_degree = models.CharField(max_length=50, default='Введите степень износа', verbose_name='Степень износа')
+    purchase_date = models.DateTimeField(verbose_name='Дата приобретения')
+    amount = models.FloatField(default=0, verbose_name='Количество')
+
+    def was_published_recently(self):
+        return self.purchase_date >= timezone.now() - datetime.timedelta(days=1)
+
+    was_published_recently.admin_order_field = 'purchase_date'
+    was_published_recently.boolean = True
+    was_published_recently.short_description = 'Приобретено недавно?'
