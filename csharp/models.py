@@ -79,7 +79,7 @@ class DecorationSpecification(models.Model):
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
     decoration = models.ForeignKey(Decoration, on_delete=models.CASCADE, verbose_name='Украшение для торта',
-                                   default=Decoration.DEFAULT_PK)
+                                   null=True, default = None)
     amount = models.FloatField(default=0, verbose_name='Количество', blank=True)
 
     def __str__(self):
@@ -92,7 +92,7 @@ class SemifinishedSpecification(models.Model):
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', related_name="product",
                                 default=Product.DEFAULT_PK)
-    semifinished = models.ForeignKey(Product, on_delete=models.CASCADE, default=Product.DEFAULT_PK,
+    semifinished = models.ForeignKey(Product, on_delete=models.CASCADE, default = None, null=True,
                                      verbose_name='Полуфабрикат', related_name="semifinished")
     amount = models.FloatField(default=0, verbose_name='Количество', blank=True)
 
@@ -105,8 +105,8 @@ class ProductSpecification(models.Model):
     Спецификация ингрeдиенты
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, verbose_name='Ингредиент',
-                                   default=Ingredient.DEFAULT_PK)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, verbose_name='Ингредиент', null=True,
+                                   default = None)
     amount = models.FloatField(default=0, verbose_name='Количество', blank=True)
 
     def __str__(self):

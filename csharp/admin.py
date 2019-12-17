@@ -23,32 +23,32 @@ class ToolAdmin(admin.ModelAdmin):
 
     list_filter = ['purchase_date']
 
-# class OperationSpecificationInline(admin.StackedInline):
-#     model = OperationSpecification
-#     extra = 1
-#
-#
-# class DecorationSpecificationInline(admin.StackedInline):
-#     model = DecorationSpecification
-#     extra = 1
-#
-#
-# class ProductSpecificationInline(admin.StackedInline):
-#     model = ProductSpecification
-#     extra = 1
-#
-#
-# class SemifinishedSpecificationInline(admin.StackedInline):
-#     model = SemifinishedSpecification
-#     extra = 1
-#     fk_name = "product"
-#
-# class ProductAdmin(admin.ModelAdmin):
-#     fieldsets = [
-#         (None, {'fields': ['name']}),
-#     ]
-#     inlines = [SemifinishedSpecificationInline, ProductSpecificationInline,
-#                DecorationSpecificationInline, OperationSpecificationInline]
+class OperationSpecificationInline(admin.StackedInline):
+    model = OperationSpecification
+    extra = 1
+
+
+class DecorationSpecificationInline(admin.StackedInline):
+    model = DecorationSpecification
+    extra = 1
+
+
+class ProductSpecificationInline(admin.StackedInline):
+    model = ProductSpecification
+    extra = 1
+
+
+class SemifinishedSpecificationInline(admin.StackedInline):
+    model = SemifinishedSpecification
+    extra = 1
+    fk_name = "product"
+
+class ProductAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['name']}),
+    ]
+    inlines = [SemifinishedSpecificationInline, ProductSpecificationInline,
+               DecorationSpecificationInline, OperationSpecificationInline]
 #     def get_fieldsets(self, request, obj=None):
 #         fieldsets = super(OperationSpecificationAdmin, self).get_fieldsets(request, obj)
 #         fieldsets[0][1]['fields'] += ['num']
@@ -65,7 +65,7 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Provider, ProviderAdmin)
 
-admin.site.register(Product)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Decoration, DecorationAdmin)
 admin.site.register(DecorationSpecification)
 admin.site.register(SemifinishedSpecification)
