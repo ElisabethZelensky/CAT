@@ -156,14 +156,29 @@ class Order(models.Model):
     """
     Заказ
     """
-    # Двойной первичный ключ
-    # migration = models.ForeignKey('Migration')
-    # host = models.ForeignKey(User, related_name='host_set')
-    #
-    # class Meta:
-    #     unique_together = (("migration", "host"),)
+    NEW = 'Новый'
+    REJECTED = 'Отменён'
+    SPEC = 'Составление спецификации'
+    COMFIRMATION = 'Подтверждение'
+    PURCHASE = 'Закупка'
+    CONTROL = 'Контроль'
+    DONE = 'Готов'
+    COMPLETED = 'Выполнен'
+
+    STATUS = [
+        (NEW, 'Новый'),
+        (REJECTED, 'Отменён'),
+        (SPEC, 'Составление спецификации'),
+        (COMFIRMATION, 'Подтверждение'),
+        (PURCHASE, 'Закупка'),
+        (CONTROL, 'Контроль'),
+        (DONE, 'Готов'),
+        (COMPLETED, 'Выполнен'),
+    ]
     date_added = models.DateTimeField(auto_now_add=True, verbose_name='Дата заказа')
     order_name = models.CharField(max_length=200, verbose_name='Наименование заказа')
+    status = models.CharField(max_length=200, choices=STATUS, verbose_name='Статус заказа',
+                              default=NEW)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие',
                                 default=Product.DEFAULT_PK)
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
