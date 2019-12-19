@@ -1,9 +1,29 @@
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="/csharp/{{ question.id }}/">{{ question.order_name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+{#{% extends "admin/base_site.html" %}#}
+{#{% load i18n static %}#}
+
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block branding %}{% endblock %}
+
+{% block welcome-msg %}
+    {% trans 'Welcome,' %}
+    <strong>{% trans 'JOPA' %}</strong>.
+{% endblock %}
+{% block userlinks %}
+    <a href="#">{% trans 'View site' %}</a> /
+    <a href="{% url '' %}">{% trans 'Log out' %}</a>
+{% endblock %}
+{% block nav-global %}{% endblock %}
+
+{% block content %}
+    {% if latest_question_list %}
+        <ul>
+        {% for question in latest_question_list %}
+            <li><a href="/csharp/{{ question.id }}/">{{ question.order_name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+{% endblock %}
