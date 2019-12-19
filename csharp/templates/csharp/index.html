@@ -2,19 +2,11 @@
 {#{% load i18n static %}#}
 
 {% extends "admin/base.html" %}
-{% load i18n static %}
+{% load static %}
 
-{% block branding %}{% endblock %}
-
-{% block welcome-msg %}
-    {% trans 'Welcome,' %}
-    <strong>{% trans 'JOPA' %}</strong>.
+{% block nav-global %}
+    adad
 {% endblock %}
-{% block userlinks %}
-    <a href="#">{% trans 'View site' %}</a> /
-    <a href="{% url '' %}">{% trans 'Log out' %}</a>
-{% endblock %}
-{% block nav-global %}{% endblock %}
 
 {% block content %}
     {% if latest_question_list %}
@@ -26,4 +18,10 @@
     {% else %}
         <p>No polls are available.</p>
     {% endif %}
+
+<h1>Custom message!</h1>
+
+<!-- Render the rest of the ChangeList view by calling block.super -->
+{{ block.super }}
 {% endblock %}
+
