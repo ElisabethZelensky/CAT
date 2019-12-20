@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.conf import settings
 from django.db import models
@@ -42,12 +43,15 @@ class Ingredient(models.Model):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, default=Provider.DEFAULT_PK,
                                  blank=True, null=True, verbose_name='Поставщик')
     expired = models.DateTimeField(default=timezone.now, verbose_name='Срок годности')
-    image = models.ImageField(blank=True, null=True, verbose_name='Изображение')
+    image = models.ImageField(blank=True, null=True, upload_to='pictures/%Y/%m/%d/')
     ingredient_type = models.CharField(max_length=30, default='Введите тип ингредиента', verbose_name='Тип Ингредиента')
     purchase_price = models.FloatField(default=0, verbose_name='Закупочная цена')
     gost = models.CharField(max_length=10, blank=True, null=True, verbose_name='ГОСТ')
     packing = models.CharField(max_length=20, blank=True, null=True, verbose_name='Фасовка')
     characteristic = models.TextField(blank=True, null=True, verbose_name='Характеристика')
+
+    def url(self):
+        return os.path.join(settings.STATIC_URL, os.path.basename(str(self.image)))
 
     def __str__(self):
         return self.name
@@ -134,7 +138,7 @@ class OperationSpecification(models.Model):
     num = models.IntegerField(verbose_name='Порядковый номер', default=1)
     operation = models.CharField(max_length=200, verbose_name='Операция', default='Введите операцию')
     equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, default=EquipmentType.DEFAULT_PK,
-                                       verbose_name='Тип оборудования', blank=True)
+                                       verbose_name='Тип оборудования', blank=True, null=True)
     operation_time = models.DateTimeField(verbose_name='Время на операцию', default=timezone.now, blank=True)
 
     def __str__(self):

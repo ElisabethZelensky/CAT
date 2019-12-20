@@ -1,8 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin
-from django.utils import timezone
-from django.contrib.auth.models import User, Group
 from csharp.models import *
 
 
@@ -13,7 +9,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('status', )
 
 
-class ExpiredIngredientFilter(admin.SimpleListFilter):
+class ExpiredFilter(admin.SimpleListFilter):
     title = 'Годен продукт?'
     parameter_name = 'was_expired'
 
@@ -38,29 +34,17 @@ class IngredientAdmin(admin.ModelAdmin):
     was_expired.boolean = True
     was_expired.short_description = 'Продукт годен?'
 
+    def headshot_image(self, obj):
+        from django.utils.html import mark_safe
+        return mark_safe('<img src="{url}" width=20% height=20% />'.format(url=obj.image.url, ))
+    headshot_image.short_description = 'Изображение'
+
+    readonly_fields = ["headshot_image"]
+
     list_display = ('articul', 'name', 'amount', 'measure_unit',
-                    'purchase_price', 'was_expired', 'provider')
+                    'purchase_price', 'was_expired', 'provider', )
 
-    list_filter = ('expired', ExpiredIngredientFilter)
-
-
-class ExpiredDecorationFilter(admin.SimpleListFilter):
-    title = 'Годен продукт?'
-    parameter_name = 'was_expired'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('Yes', 'Да'),
-            ('No', 'Нет'),
-        )
-
-    def queryset(self, request, queryset):
-        value = self.value()
-        if value == 'Yes':
-            return queryset.filter(expired__gt=timezone.now() - datetime.timedelta(days=1))
-        elif value == 'No':
-            return queryset.exclude(expired__gt=timezone.now() - datetime.timedelta(days=1))
-        return queryset
+    list_filter = ('expired', ExpiredFilter)
 
 
 class DecorationAdmin(admin.ModelAdmin):
@@ -72,7 +56,7 @@ class DecorationAdmin(admin.ModelAdmin):
     list_display = ('articul', 'name', 'amount', 'measure_unit',
                     'purchase_price', 'expired', 'was_expired', 'provider')
 
-    list_filter = ('expired', ExpiredDecorationFilter)
+    list_filter = ('expired', ExpiredFilter)
 
 
 class ProviderAdmin(admin.ModelAdmin):
@@ -109,6 +93,7 @@ class SemifinishedSpecificationInline(admin.StackedInline):
     model = SemifinishedSpecification
     extra = 1
     fk_name = "product"
+
 
 class ProductAdmin(admin.ModelAdmin):
     fieldsets = [
