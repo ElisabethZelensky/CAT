@@ -11,12 +11,66 @@ class OrderAdmin(admin.ModelAdmin):
                     'customer', 'completion_date', 'manager')
 
 
+class ExpiredIngredientFilter(admin.SimpleListFilter):
+    title = 'Годен продукт?'
+    parameter_name = 'was_expired'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Да'),
+            ('No', 'Нет'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(expired__gt=timezone.now() - datetime.timedelta(days=1))
+        elif value == 'No':
+            return queryset.exclude(expired__gt=timezone.now() - datetime.timedelta(days=1))
+        return queryset
+
+
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('articul', 'name', 'amount', 'measure_unit', 'purchase_price', 'provider')
+    def was_expired(self, obj):
+        return obj.expired >= timezone.now() - datetime.timedelta(days=1)
+    was_expired.boolean = True
+    was_expired.short_description = 'Продукт годен?'
+
+    list_display = ('articul', 'name', 'amount', 'measure_unit',
+                    'purchase_price', 'was_expired', 'provider')
+
+    list_filter = ('expired', ExpiredIngredientFilter)
+
+
+class ExpiredDecorationFilter(admin.SimpleListFilter):
+    title = 'Годен продукт?'
+    parameter_name = 'was_expired'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Да'),
+            ('No', 'Нет'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(expired__gt=timezone.now() - datetime.timedelta(days=1))
+        elif value == 'No':
+            return queryset.exclude(expired__gt=timezone.now() - datetime.timedelta(days=1))
+        return queryset
 
 
 class DecorationAdmin(admin.ModelAdmin):
-    list_display = ('articul', 'name', 'amount', 'measure_unit', 'purchase_price', 'provider')
+    def was_expired(self, obj):
+        return obj.expired >= timezone.now() - datetime.timedelta(days=1)
+    was_expired.boolean = True
+    was_expired.short_description = 'Продукт годен?'
+
+    list_display = ('articul', 'name', 'amount', 'measure_unit',
+                    'purchase_price', 'expired', 'was_expired', 'provider')
+
+    list_filter = ('expired', ExpiredDecorationFilter)
 
 
 class ProviderAdmin(admin.ModelAdmin):
@@ -31,7 +85,7 @@ class ToolAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'tool_type', 'purchase_date', 'time_seconds', 'amount')
 
-    list_filter = ['purchase_date']
+    list_filter = ('purchase_date', )
 
 
 class OperationSpecificationInline(admin.StackedInline):

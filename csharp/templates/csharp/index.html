@@ -5,23 +5,14 @@
 {% load static %}
 
 {% block nav-global %}
-    adad
+    <a href="#">Login</a>
+    <a href="#">Register</a>
 {% endblock %}
 
 {% block content %}
-    {% if latest_question_list %}
-        <ul>
-        {% for question in latest_question_list %}
-            <li><a href="/csharp/{{ question.id }}/">{{ question.order_name }}</a></li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No polls are available.</p>
-    {% endif %}
 
 <h1>Custom message!</h1>
 
 <!-- Render the rest of the ChangeList view by calling block.super -->
 {{ block.super }}
 {% endblock %}
-

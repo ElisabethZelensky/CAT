@@ -40,13 +40,14 @@ class Ingredient(models.Model):
     measure_unit = models.CharField(max_length=30, default='Введите единицу измерения', verbose_name='Единицы измерения')
     amount = models.FloatField(default=0, verbose_name='Количество')
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, default=Provider.DEFAULT_PK,
-                                 blank=True, verbose_name='Поставщик')
-    image = models.ImageField(blank=True, verbose_name='Изображение')
+                                 blank=True, null=True, verbose_name='Поставщик')
+    expired = models.DateTimeField(default=timezone.now, verbose_name='Срок годности')
+    image = models.ImageField(blank=True, null=True, verbose_name='Изображение')
     ingredient_type = models.CharField(max_length=30, default='Введите тип ингредиента', verbose_name='Тип Ингредиента')
     purchase_price = models.FloatField(default=0, verbose_name='Закупочная цена')
-    gost = models.CharField(max_length=10, blank=True, verbose_name='ГОСТ')
-    packing = models.CharField(max_length=20, blank=True, verbose_name='Фасовка')
-    characteristic = models.TextField(blank=True, verbose_name='Характеристика')
+    gost = models.CharField(max_length=10, blank=True, null=True, verbose_name='ГОСТ')
+    packing = models.CharField(max_length=20, blank=True, null=True, verbose_name='Фасовка')
+    characteristic = models.TextField(blank=True, null=True, verbose_name='Характеристика')
 
     def __str__(self):
         return self.name
@@ -63,8 +64,9 @@ class Decoration(models.Model):
                                     verbose_name='Единицы измерения')
     amount = models.FloatField(default=0, verbose_name='Количество')
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, default=Provider.DEFAULT_PK,
-                                 blank=True, verbose_name='Поставщик')
-    image = models.ImageField(blank=True, verbose_name='Изображение')
+                                 blank=True, null=True, verbose_name='Поставщик')
+    expired = models.DateTimeField(default=timezone.now, verbose_name='Срок годности')
+    image = models.ImageField(blank=True, null=True, verbose_name='Изображение')
     decoration_type = models.CharField(max_length=30, default='Введите тип украшения', verbose_name='Тип украшения')
     purchase_price = models.FloatField(default=0, verbose_name='Закупочная цена')
     weight = models.FloatField(default=0, verbose_name='Вес единицы украшения')
@@ -184,10 +186,10 @@ class Order(models.Model):
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                  related_name="customer", verbose_name='Заказчик')
     manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                                related_name="manager", verbose_name='Ответственный менеджер', blank=True)
-    cost = models.FloatField(verbose_name='Стоимость', blank=True)
-    completion_date = models.DateTimeField(verbose_name='Плановая дата завершения', blank=True)
-    work_examples = models.CharField(max_length=200, verbose_name='Примеры работ', blank=True)
+                                related_name="manager", verbose_name='Ответственный менеджер', null=True, blank=True)
+    cost = models.FloatField(verbose_name='Стоимость')
+    completion_date = models.DateTimeField(verbose_name='Плановая дата завершения', null=True, blank=True)
+    work_examples = models.CharField(max_length=200, verbose_name='Примеры работ', null=True, blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.order_name, self.product)
