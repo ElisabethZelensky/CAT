@@ -10,6 +10,8 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('order_name', 'date_added', 'status', 'cost',
                     'customer', 'completion_date', 'manager')
 
+    list_filter = ('status', )
+
 
 class ExpiredIngredientFilter(admin.SimpleListFilter):
     title = 'Годен продукт?'
