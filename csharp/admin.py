@@ -109,6 +109,11 @@ class ProductAdmin(admin.ModelAdmin):
                DecorationSpecificationInline, OperationSpecificationInline]
 
 
+class EquipmentFailuresAdmin(admin.ModelAdmin):
+    list_display = ('equipment', 'causes', 'failure_date', 'failure_date_over', )
+    list_filter = ('causes', )
+
+
 admin.site.app_index_template = 'admin/custom_index.html'
 
 admin.site.register(Order, OrderAdmin)
@@ -125,3 +130,5 @@ admin.site.register(OperationSpecification)
 admin.site.register(Equipment)
 
 admin.site.register(Tool, ToolAdmin)
+admin.site.register(EquipmentFailures, EquipmentFailuresAdmin)
+

@@ -17,6 +17,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'изделие'
+        verbose_name_plural = 'Изделия'
+
 
 class Provider(models.Model):
     """
@@ -29,6 +33,10 @@ class Provider(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'поставщик'
+        verbose_name_plural = 'Поставщики'
 
 
 class Ingredient(models.Model):
@@ -56,6 +64,10 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'ингрeдиент'
+        verbose_name_plural = 'Ингрeдиенты'
+
 
 class Decoration(models.Model):
     """
@@ -78,6 +90,10 @@ class Decoration(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'украшение для торта'
+        verbose_name_plural = 'Украшения для торта'
+
 
 class DecorationSpecification(models.Model):
     """
@@ -90,6 +106,10 @@ class DecorationSpecification(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.product, self.decoration)
+
+    class Meta:
+        verbose_name = 'спецификация украшения для торта'
+        verbose_name_plural = 'Спецификации украшения для торта'
 
 
 class SemifinishedSpecification(models.Model):
@@ -105,6 +125,10 @@ class SemifinishedSpecification(models.Model):
     def __str__(self):
         return '{} {}'.format(self.product, self.semifinished)
 
+    class Meta:
+        verbose_name = 'спецификация полуфабрикаты'
+        verbose_name_plural = 'Спецификации полуфабрикаты'
+
 
 class ProductSpecification(models.Model):
     """
@@ -118,16 +142,34 @@ class ProductSpecification(models.Model):
     def __str__(self):
         return '{} {}'.format(self.product, self.ingredient)
 
+    class Meta:
+        verbose_name = 'спецификация ингредиенты'
+        verbose_name_plural = 'Спецификации ингредиенты'
+
 
 class EquipmentType(models.Model):
     """
     Тип оборудования
     """
-    DEFAULT_PK = 1
-    equipment_type = models.CharField(max_length=200, verbose_name='Маркировка', default=DEFAULT_PK)
+    # DEFAULT_PK = 1
+    #
+    # TYPE1 = 'Тип 1'
+    # TYPE2 = 'Тип 2'
+    # TYPE3 = 'Тип 3'
+    #
+    # TYPES = [
+    #     (TYPE1, 'Тип 1'),
+    #     (TYPE2, 'Тип 2'),
+    #     (TYPE3, 'Тип 3'),
+    # ]
+    equipment_type = models.CharField(max_length=200, verbose_name='Маркировка')
 
     def __str__(self):
         return self.equipment_type
+
+    class Meta:
+        verbose_name = 'тип оборудования'
+        verbose_name_plural = 'Типы оборудования'
 
 
 class OperationSpecification(models.Model):
@@ -137,25 +179,35 @@ class OperationSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Изделие', default=Product.DEFAULT_PK)
     num = models.IntegerField(verbose_name='Порядковый номер', default=1)
     operation = models.CharField(max_length=200, verbose_name='Операция', default='Введите операцию')
-    equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, default=EquipmentType.DEFAULT_PK,
+    equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE,
                                        verbose_name='Тип оборудования', blank=True, null=True)
     operation_time = models.DateTimeField(verbose_name='Время на операцию', default=timezone.now, blank=True)
+    description = models.TextField(blank=True, null=True, verbose_name='Описание')
 
     def __str__(self):
         return self.operation
+
+    class Meta:
+        verbose_name = 'спецификация операции'
+        verbose_name_plural = 'Спецификации операции'
 
 
 class Equipment(models.Model):
     """
     Оборудование
     """
+    DEFAULT_PK = 1
     marking = models.CharField(max_length=200, verbose_name='Маркировка', default='Введите маркировку')
-    equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, default=EquipmentType.DEFAULT_PK,
+    equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE,
                                        verbose_name='Тип оборудования')
     characteristic = models.TextField(blank=True, verbose_name='Характеристика')
 
     def __str__(self):
         return str(self.equipment_type)
+
+    class Meta:
+        verbose_name = 'оборудование'
+        verbose_name_plural = 'Оборудование'
 
 
 class Order(models.Model):
@@ -198,6 +250,10 @@ class Order(models.Model):
     def __str__(self):
         return '{} {}'.format(self.order_name, self.product)
 
+    class Meta:
+        verbose_name = 'заказ'
+        verbose_name_plural = 'Заказы'
+
 
 class Tool(models.Model):
     """
@@ -216,3 +272,35 @@ class Tool(models.Model):
     was_published_recently.admin_order_field = 'purchase_date'
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Приобретено недавно?'
+
+    class Meta:
+        verbose_name = 'инструмент'
+        verbose_name_plural = 'Инструменты'
+
+
+class EquipmentFailures(models.Model):
+    """
+    Сбои оборудования
+    """
+    CAUSE1 = 'Причина 1'
+    CAUSE2 = 'Причина 2'
+    CAUSE3 = 'Причина 3'
+
+    CAUSES = [
+        (CAUSE1, 'Причина 1'),
+        (CAUSE2, 'Причина 2'),
+        (CAUSE3, 'Причина 3'),
+    ]
+    failure_date = models.DateTimeField(verbose_name='Время начала сбоя')
+    causes = models.CharField(max_length=200, choices=CAUSES, verbose_name='Причина сбоя',
+                              default=CAUSE1)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, verbose_name='Оборудование',
+                                  default=Equipment.DEFAULT_PK)
+    failure_date_over = models.DateTimeField(verbose_name='Время продолжения работы', blank=True, null=True)
+
+    def __str__(self):
+        return '{}'.format(self.equipment)
+
+    class Meta:
+        verbose_name = 'сбой оборудования'
+        verbose_name_plural = 'Сбои оборудования'
