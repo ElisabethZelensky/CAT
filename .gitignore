@@ -1,0 +1,3 @@
+**/*.pyc
+FRONTEND/DjReact/node_modules/
+build

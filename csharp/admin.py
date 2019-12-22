@@ -3,10 +3,16 @@ from csharp.models import *
 
 
 class OrderAdmin(admin.ModelAdmin):
+    model = Order
+    exclude = ('customer', )
     list_display = ('order_name', 'date_added', 'status', 'cost',
                     'customer', 'completion_date', 'manager')
 
     list_filter = ('status', )
+
+    def save_model(self, request, obj, form, change):
+        obj.customer = request.user
+        super(OrderAdmin, self).save_model(request, obj, form, change)
 
 
 class ExpiredFilter(admin.SimpleListFilter):
