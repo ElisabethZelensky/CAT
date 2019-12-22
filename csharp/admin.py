@@ -5,6 +5,7 @@ from csharp.models import *
 class OrderAdmin(admin.ModelAdmin):
     model = Order
     exclude = ('customer', )
+    readonly_fields = ('date_added', )
     list_display = ('order_name', 'date_added', 'status', 'cost',
                     'customer', 'completion_date', 'manager')
 
@@ -114,6 +115,16 @@ class EquipmentFailuresAdmin(admin.ModelAdmin):
     list_filter = ('causes', )
 
 
+# class QualityControlInline(admin.StackedInline):
+#     model = QualityControl
+#     extra = 1
+
+
+class QualityControlAdmin(admin.ModelAdmin):
+    # inlines = [QualityControlInline]
+    list_display = ('order', 'parameter', )
+
+
 admin.site.app_index_template = 'admin/custom_index.html'
 
 admin.site.register(Order, OrderAdmin)
@@ -131,4 +142,6 @@ admin.site.register(Equipment)
 
 admin.site.register(Tool, ToolAdmin)
 admin.site.register(EquipmentFailures, EquipmentFailuresAdmin)
+
+admin.site.register(QualityControl, QualityControlAdmin)
 

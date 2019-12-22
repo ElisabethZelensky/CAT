@@ -214,6 +214,8 @@ class Order(models.Model):
     """
     Заказ
     """
+    DEFAULT_PK = 1
+
     NEW = 'Новый'
     REJECTED = 'Отменён'
     SPEC = 'Составление спецификации'
@@ -233,7 +235,7 @@ class Order(models.Model):
         (DONE, 'Готов'),
         (COMPLETED, 'Выполнен'),
     ]
-    date_added = models.DateTimeField(auto_now_add=True, verbose_name='Дата заказа')
+    date_added = models.DateTimeField(auto_now=True, verbose_name='Дата заказа')
     order_name = models.CharField(max_length=200, verbose_name='Наименование заказа')
     status = models.CharField(max_length=200, choices=STATUS, verbose_name='Статус заказа',
                               default=NEW)
@@ -304,3 +306,28 @@ class EquipmentFailures(models.Model):
     class Meta:
         verbose_name = 'сбой оборудования'
         verbose_name_plural = 'Сбои оборудования'
+
+
+class QualityControl(models.Model):
+    """
+    Контроль качества
+    """
+    GOOD = '+'
+    BAD = '-'
+
+    CHOISES = [
+        (GOOD, '+'),
+        (BAD, '-'),
+    ]
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Заказ',
+                              default=Order.DEFAULT_PK)
+    parameter = models.CharField(max_length=10, choices=CHOISES, verbose_name='Оценка качества',
+                                 default=BAD)
+    description = models.TextField(blank=True, verbose_name='Описание')
+
+    def __str__(self):
+        return '{}'.format(self.parameter)
+
+    class Meta:
+        verbose_name = 'контроль качества'
+        verbose_name_plural = 'Контроль качества'
