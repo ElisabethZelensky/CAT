@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'articles',
     'csharp',
     'users',
     'django.contrib.admin',
@@ -44,14 +43,14 @@ INSTALLED_APPS = [
     'bootstrap4',
 
     'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'corsheaders',
-    'rest_auth',
-    'rest_auth.registration',
-    'rest_framework',
-    'rest_framework.authtoken',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'corsheaders',
+    # 'rest_auth',
+    # 'rest_auth.registration',
+    # 'rest_framework',
+    # 'rest_framework.authtoken',
 ]
 
 
@@ -161,6 +160,4 @@ CORS_ORIGIN_WHITELIST = (
 
 CSRF_COOKIE_NAME = "csrftoken"
 
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+
